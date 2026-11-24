@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="htmx-config" content='{"selfRequestsOnly": false}'>
+
+    <title>Список пользователей — irina</title>
+
+    <!-- Подключение библиотек -->
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.10/dist/handlebars.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx-ext-client-side-templates@2.0.2/client-side-templates.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            max-width: 720px;
+            margin: 70px auto;
+            padding: 0 24px;
+            background: #f7f8fa;
+            color: #293244;
+            font-family: Arial, sans-serif;
+        }
+
+        .nickname {
+            color: #8992a1;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            margin: 30px 0 12px;
+            font-size: 36px;
+        }
+
+        .description {
+            color: #778193;
+            line-height: 1.5;
+        }
+
+        button {
+            margin: 20px 0;
+            padding: 13px 22px;
+            border: 0;
+            border-radius: 7px;
+            background: #35435c;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4b5b76;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .loading {
+            display: none;
+            color: #8992a1;
+            font-size: 14px;
+        }
+
+        .loading.htmx-request {
+            display: block;
+        }
+
+        .results {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e4ea;
+        }
+
+        .results h2 {
+            margin-bottom: 18px;
+            font-size: 16px;
+        }
+
+        .user-row {
+            padding: 14px 0;
+            border-bottom: 1px solid #e5e8ed;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .user-row a {
+            color: #35435c;
+            text-decoration: none;
+        }
+
+        .user-row a:hover {
+            text-decoration: underline;
+        }
+
+        .username,
+        .empty {
+            color: #8992a1;
+        }
+
+        .footer {
+            margin-top: 45px;
+            color: #a0a7b2;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body hx-ext="client-side-templates">
+
+    <main>
+        <div class="nickname">irina</div>
+
+        <h1>Список пользователей</h1>
+
+        <p class="description">
+            Получение и просмотр данных из внешнего API.
+        </p>
+
+        <button
+            type="button"
+            hx-get="https://dummyjson.com/users?limit=10&amp;select=email,username"
+            hx-target="#users"
+            hx-swap="innerHTML"
+            hx-indicator="#loading"
+            hx-disabled-elt="this"
+            handlebars-template="users-template">
+            Загрузить пользователей
+        </button>
+
+        <p id="loading" class="loading">Загрузка данных...</p>
+
+        <section class="results">
+            <h2>Результаты · DummyJSON API</h2>
+
+            <div id="users" aria-live="polite">
+                <p class="empty">
+                    Нажмите кнопку, чтобы загрузить пользователей.
+                </p>
+            </div>
+        </section>
+
+        <footer class="footer">HTMX · HANDLEBARS</footer>
+    </main>
+
+    <!-- Шаблон для отображения данных -->
+    <script id="users-template" type="text/x-handlebars-template">
+        {{#each users}}
+            <div class="user-row">
+                <a href="mailto:{{email}}">{{email}}</a>
+                <span class="username">: {{username}}</span>
+            </div>
+        {{else}}
+            <p class="empty">Пользователи не найдены.</p>
+        {{/each}}
+    </script>
+
+</body>
+</html>
